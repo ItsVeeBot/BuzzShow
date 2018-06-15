@@ -43,6 +43,8 @@ namespace BuzzShow
         SoundPlayer choiceSound;
         bool blinking = false;
         int blinkLength = 200;
+        bool sendImmediately = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -252,6 +254,10 @@ namespace BuzzShow
                                         {
                                             choiceSound.Play();
                                         }
+                                        if (sendImmediately)
+                                        {
+                                            dispatchGetSingle(i/5);
+                                        }
                                     }
                                 }
                             }
@@ -383,6 +389,49 @@ namespace BuzzShow
             
         }
 
+        public void dispatchGetSingle(int playerNumber)
+        {
+            Thread getThread = new Thread(new ThreadStart(() => sendGETSingle(playerNumber)));
+            getThread.Start();
+        }
+        public void sendGETSingle(int playerNumber)
+        {
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.Append("http://localhost/buzzshow/answer?");
+
+            if (playerNumber == 0)
+            {
+                urlBuilder.Append("a=");
+            }
+            else if (playerNumber == 1)
+            {
+                urlBuilder.Append("b=");
+            }
+            else if (playerNumber == 2)
+            {
+                urlBuilder.Append("c=");
+            }
+            else if (playerNumber == 3)
+            {
+                urlBuilder.Append("d=");
+            }
+
+            urlBuilder.Append(choices[playerNumber]);
+            Console.WriteLine("Send GET Single: " + urlBuilder.ToString());
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlBuilder.ToString());
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+                Console.WriteLine("GET Success");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("GET Failed: " + e.ToString());
+            }
+
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
             Console.WriteLine("Window closed");
@@ -474,6 +523,16 @@ namespace BuzzShow
                 blinkLength = blinkLengthBox.Value.Value*10;
                 Console.WriteLine("Blink Length: " + blinkLength);
             }
+        }
+
+        private void sendImmediateBox_Checked(object sender, RoutedEventArgs e)
+        {
+            sendImmediately = true;
+        }
+
+        private void sendImmediateBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            sendImmediately = false;
         }
     }
 }

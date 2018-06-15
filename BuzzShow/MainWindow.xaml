@@ -62,5 +62,6 @@
                 <CheckBox x:Name="lockInSoundBox" Content="Lock-In" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" IsChecked="True" Checked="lockInSoundBox_Checked" Unchecked="lockInSoundBox_Unchecked"/>
             </Grid>
         </GroupBox>
+        <CheckBox x:Name="sendImmediateBox" Content="Send Answers Immediately" HorizontalAlignment="Left" Margin="185,388,0,0" VerticalAlignment="Top" Width="165" Checked="sendImmediateBox_Checked" Unchecked="sendImmediateBox_Unchecked"/>
     </Grid>
 </Window>
